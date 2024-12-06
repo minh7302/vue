@@ -1,7 +1,8 @@
 <script setup>
   import { reactive, ref } from 'vue';
   import productsData from './assets/products.json';
-  import Product from './components/Product.vue';
+  import Cart from './components/Cart.vue';
+  import List_product from './components/List_product.vue';
 
   const products = productsData.products;
 
@@ -95,63 +96,22 @@
     </div>
 
     <div class="row2 flex w-full">
-      <div class="products grid grid-cols-2 w-7/12 gap-x-10 gap-y-5">
-        <div v-for="product in products" :key="product.id"
-          :id="'product-' + product.id"
-          class="item flex justify-between"
-        >
-          <Product 
-            :counter="useCounter" 
-            :product="product" 
-            :add="addToCart" 
-            :updateQuanttity="updateQuanttity"
-            :added="cart.items.some(item => item.id === product.id)"
-            :quantity="cart.items.find(item => item.id === product.id)?.details.quantity"
-          />
-        </div>
-      </div>
+      <List_product
+        :products="products"
+        :useCounter="useCounter"
+        :addToCart="addToCart" 
+        :updateQuanttity="updateQuanttity"
+        :cart="cart"
+      />
 
-      <div class="cart w-5/12 px-10 flex flex-col justify-between">
-        <div class="h-5/6 flex flex-col gap-5">
-          <div class="cart-info flex justify-between">
-            <div class="count flex">
-              <div class="num-item">
-                {{cart.items.length}}
-              </div>
-              /{{ products.length }} Added
-            </div>
+      <Cart
+        :cart="cart"
+        :product_count="products.length"
+        :sum_price="sum_price"
+        :removeFromCart="removeFromCart"
+        :clearCart="clearCart"
+      />
 
-            <a @click="clearCart()" class="rs-btn">
-              Reset
-            </a>
-          </div>
-
-          <div class="cart-content h-fit grid grid-cols-3 gap-y-5">
-            <div 
-              v-for="(item,index) in cart.items"
-              :key="item" 
-              class="cart-item flex justify-between h-fit"
-            >
-              <div class="img relative">
-                <img class="object-contain" width="100px" height="100px" :src="cart.items[index].details.images" alt="product image" />
-                <button 
-                  class="absolute top-0 right-0 z-10 bg-black text-white h-5 w-5 flex justify-center items-center"
-                  @click="removeFromCart(item.id)"
-                >
-                  x
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div 
-          class="total_price h-1/6 text-center"
-          :class="cart.items.length == 0 ? 'hidden' : ''"
-        >
-            Total: {{cart.total_price}}
-          </div>
-      </div>
     </div>
   </div>
 </template>
