@@ -17,3 +17,10 @@
     </button>
   </div>
 </template>
+
+<style scoped>
+  .cart-content img {
+    height: 100px;
+    width: 100px;
+  }
+</style>

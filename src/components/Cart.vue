@@ -10,7 +10,7 @@
 </script>
 
 <template>
-  <div class="cart w-5/12 px-10 flex flex-col justify-between">
+  <div class="cart w-5/12 flex flex-col justify-between ml-10">
     <div class="h-5/6 flex flex-col gap-5">
       <div class="cart-info flex justify-between">
         <div class="count flex">

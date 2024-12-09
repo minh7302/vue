@@ -3,13 +3,22 @@
   import productsData from './assets/products.json';
   import Cart from './components/Cart.vue';
   import List_product from './components/List_product.vue';
+  import Product_selected from './components/Product_selected.vue';
 
   const products = productsData.products;
+
+  const product_seclected = reactive({
+    product: products[0]
+  })
 
   const cart = reactive({
     items: [],
     total_price: 0
   });
+
+  function selected(id) {
+    product_seclected.product = products.find(product => product.id === id);
+  }
 
 
   function addToCart(id) {
@@ -34,7 +43,10 @@
       cart.total_price += products.find(product => product.id === id).price;
     }
     const decrement = () => {
-      if (!cart.items[itemIndex].details.quantity || cart.items[itemIndex].details.quantity === 1) return;
+      if (!cart.items[itemIndex].details.quantity || cart.items[itemIndex].details.quantity === 1) {
+        removeFromCart(id);
+        return;
+      }
       cart.items[itemIndex].details.quantity--;
       cart.total_price -= products.find(product => product.id === id).price;
     }
@@ -82,26 +94,18 @@
 <template>
   
   <div class="bg-gray-50 p-2.5">
-    <div class="row1 flex justify-between mb-2.5">
-      <div class="col1 w-1/2 flex justify-center items-center">
-        <img width="400px" height="400px" src="./assets/img/img.jpg" alt="">
-      </div>
-      <div class="col2 w-1/2">
-        <div class="title text-2xl">Make your own style</div>
-        <div class="category mb-2.5 text-xs">Catagories</div>
-        <div class="price mb-2.5 text-lg">PRICE: $350</div>
-        <div class="description mb-1.5">Get inspired by the latest fashion trends.</div>
-        <a href="#">Read More</a>
-      </div>
+    <div class="row1 flex justify-between mb-10">
+      <Product_selected :product="product_seclected.product"/>
     </div>
 
-    <div class="row2 flex w-full">
+    <div class="row2 flex w-full p-10">
       <List_product
         :products="products"
         :useCounter="useCounter"
         :addToCart="addToCart" 
         :updateQuanttity="updateQuanttity"
         :cart="cart"
+        :selected="selected"
       />
 
       <Cart
@@ -117,11 +121,5 @@
 </template>
 
 <style scoped>
-  a {
-    padding: 0 !important;
-    cursor: pointer;
-  }
-  .cart-content img {
-    height: 100px;
-  }
+  
 </style>
