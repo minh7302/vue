@@ -3,9 +3,10 @@
     product: Object,
     added: Boolean,
     quantity: Number,
-    selected: Function,
     cart: Object
   });
+
+  const emit = defineEmits(['selected','addToCart','increment', 'decrement', 'updateQuantity']);
   
   function addToCart (id) {
     const itemIndex = props.cart.items.findIndex(item => item.id === id);
@@ -61,7 +62,7 @@
   <div class="col2 w-1/2">
     <div class="title font-bold">{{product.title}}</div>
     <div class="price font-semibold text-sm">{{product.price}}</div>
-    <a @click="selected(product.id)" href="#" class="text-sky-500 font-semibold text-xs">Show Details</a>
+    <a @click="$emit('selected', product.id)" href="#" class="text-sky-500 font-semibold text-xs">Show Details</a>
   </div>
   <div class="col1 w-1/2 flex flex-col items-center gap-2">
     <img width="100%" height="auto" :src="product.images" :alt="product.title" />

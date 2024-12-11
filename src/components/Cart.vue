@@ -5,14 +5,7 @@
     product_count: Number,
     totalPrice: Number
   });
-
-  function clearCart() {
-    props.cart.items = [];
-  }
-
-  function removeFromCart(id) {
-    props.cart.items = props.cart.items.filter(item => item.id !== id);
-  }
+  const emit = defineEmits(['productRemoved', 'clearCart']);
 </script>
 
 <template>
@@ -26,7 +19,7 @@
           /{{ product_count }} Added
         </div>
 
-        <a @click="clearCart()" class="rs-btn">
+        <a @click="$emit('clearCart')" class="rs-btn">
           Reset
         </a>
       </div>
@@ -38,7 +31,7 @@
           class="cart-item flex justify-between h-fit"
         >
           <ItemAdded 
-            :removeFromCart="removeFromCart"
+            @productRemoved="$emit('productRemoved', item.id)"
             :item="item"
           />
         </div>

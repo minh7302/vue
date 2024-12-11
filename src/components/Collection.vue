@@ -3,8 +3,8 @@ import Product from './Product.vue';
 defineProps({
   products: Object,
   cart: Object,
-  selected: Function,
 });
+const emit = defineEmits(['selected']);
 </script>
 
 <template>
@@ -20,8 +20,8 @@ defineProps({
         :product="product" 
         :added="cart.items.some(item => item.id === product.id)"
         :quantity="cart.items.find(item => item.id === product.id)?.details.quantity"
-        :selected="selected"
         :cart="cart"
+        @selected="$emit('selected', $event)"
       />
     </div>
   </div>
