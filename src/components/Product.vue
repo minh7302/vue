@@ -6,54 +6,55 @@
     cart: Object
   });
 
-  const emit = defineEmits(['selected','addToCart','increment', 'decrement', 'updateQuantity']);
+  const emit = defineEmits(['selected','addToCart','productRemoved', 'updateQuantity']);
   
   function addToCart (id) {
     const itemIndex = props.cart.items.findIndex(item => item.id === id);
     
     if (itemIndex !== -1) {
-      props.cart.items[itemIndex].details.quantity += 1;
+      new_quantity = props.cart.items[itemIndex].details.quantity + 1;
+      updateQuantity(id, new_quantity);
     } else {
-      props.cart.items.push({
+      const product_added = {
         id: id,
         details: {
           ...props.product, 
           quantity: 1, 
           added: true
         }
-      });
+      }
+      emit('addToCart', product_added);
     }
   }
 
   function useCounter (id) {
     const itemIndex = props.cart.items.findIndex(item => item.id === id);
-    const checkQuantity = props.cart.items[itemIndex].details.quantity
+    const oldQuantity = props.cart.items[itemIndex].details.quantity;
     const increment = () => {
-      if (!checkQuantity|| checkQuantity === props.cart.items[itemIndex].details.stock) return;
-      props.cart.items[itemIndex].details.quantity++;
+      if (!oldQuantity|| oldQuantity === props.cart.items[itemIndex].details.stock) return;
+      updateQuantity(id, oldQuantity + 1);
     }
     const decrement = () => {
-      if (!checkQuantity || checkQuantity === 1) {
-        props.cart.items = props.cart.items.filter(item => item.id !== id);
+      if (!oldQuantity || oldQuantity === 1) {
+        emit('productRemoved', id);
         return;
       }
-      props.cart.items[itemIndex].details.quantity--;
+      updateQuantity(id, oldQuantity - 1);
     }
     return { increment, decrement };
   }
 
-  function updateQuanttity(id, event) {
-    const value = Number(event.target.value);
-    let temp = 0;
+  function updateQuantity(id, value) {
+    let new_quantity = 0;
     if (value > props.product.stock) {
-      temp = props.product.stock;
+      new_quantity = props.product.stock;
     } else if (value < 1) {
-      temp = 1;
+      new_quantity = 1;
     } else {
-      temp = value;
+      new_quantity = value;
     }
-    props.cart.items.find(item => item.id === id).details.quantity = temp;
-    event.target.value = temp;
+    emit('updateQuantity', {id, new_quantity});
+    document.querySelector('#product-' + id + ' input').value = new_quantity;
   }
 </script>
 
@@ -88,7 +89,7 @@
           min="1"
           :max="product.stock"
           :value="quantity"
-          @keyup.enter="updateQuanttity(product.id, $event)"
+          @keyup.enter="updateQuantity(product.id, Number($event.target.value))"
         >
         <button @click="useCounter(product.id).increment" class="bg-white w-3/12 h-10 font-bold text-green-700 shadow-md">+</button>
       </div>

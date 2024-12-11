@@ -4,7 +4,7 @@ defineProps({
   products: Object,
   cart: Object,
 });
-const emit = defineEmits(['selected']);
+const emit = defineEmits(['selected', 'productRemoved', 'updateQuantity', 'addToCart']);
 </script>
 
 <template>
@@ -22,6 +22,9 @@ const emit = defineEmits(['selected']);
         :quantity="cart.items.find(item => item.id === product.id)?.details.quantity"
         :cart="cart"
         @selected="$emit('selected', $event)"
+        @updateQuantity="$emit('updateQuantity', $event)"
+        @productRemoved="$emit('productRemoved', $event)"
+        @addToCart="$emit('addToCart', $event)"
       />
     </div>
   </div>

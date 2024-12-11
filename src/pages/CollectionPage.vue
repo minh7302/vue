@@ -19,6 +19,10 @@
     return sum;
   })
 
+  function removeFromCart(event) {
+    cart.items = cart.items.filter(item => item.id !== event);
+  }
+
 </script>
 
 <template>
@@ -33,6 +37,9 @@
         :products="products"
         :cart="cart"
         @selected="product_selected = products.find(product => product.id === $event)"
+        @updateQuantity="cart.items.find(item => item.id === $event.id).details.quantity = $event.new_quantity"
+        @productRemoved="removeFromCart(($event))"
+        @addToCart="cart.items.push($event)"
       />
 
       <Cart
@@ -40,7 +47,7 @@
         :product_count="products.length"
         :totalPrice="totalPrice"
         @clearCart="cart.items = []"
-        @productRemoved="cart.items = cart.items.filter(item => item.id !== $event)"
+        @productRemoved="removeFromCart(($event))"
       />
     </div>
   </div>
