@@ -2,9 +2,6 @@
 import Product from './Product.vue';
 defineProps({
   products: Object,
-  addToCart: Function,
-  useCounter: Function,
-  updateQuanttity: Function,
   cart: Object,
   selected: Function,
 });
@@ -20,13 +17,11 @@ defineProps({
       ]"
     >
       <Product 
-        :counter="useCounter" 
         :product="product" 
-        :add="addToCart" 
-        :updateQuanttity="updateQuanttity"
         :added="cart.items.some(item => item.id === product.id)"
         :quantity="cart.items.find(item => item.id === product.id)?.details.quantity"
         :selected="selected"
+        :cart="cart"
       />
     </div>
   </div>

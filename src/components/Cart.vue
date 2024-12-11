@@ -1,12 +1,18 @@
 <script setup>
-  import Item_added from './Item_added.vue';
-  defineProps({
+  import ItemAdded from './ItemAdded.vue';
+  const props = defineProps({
     cart: Object,
     product_count: Number,
-    sum_price: Function,
-    removeFromCart: Function,
-    clearCart: Function
+    totalPrice: Number
   });
+
+  function clearCart() {
+    props.cart.items = [];
+  }
+
+  function removeFromCart(id) {
+    props.cart.items = props.cart.items.filter(item => item.id !== id);
+  }
 </script>
 
 <template>
@@ -31,7 +37,7 @@
           :key="item"
           class="cart-item flex justify-between h-fit"
         >
-          <Item_added 
+          <ItemAdded 
             :removeFromCart="removeFromCart"
             :item="item"
           />
@@ -40,10 +46,10 @@
     </div>
 
     <div 
-      class="total_price h-1/6 text-center"
+      class="totalPrice h-1/6 text-center"
       :class="cart.items.length == 0 ? 'hidden' : ''"
     >
-        Total: {{cart.total_price}}
+        Total: {{totalPrice}}
     </div>
   </div>
 </template>
