@@ -34,14 +34,17 @@ export const useStore = defineStore('storeId', {
     },
     updateQuantity(id, value) {
       let new_quantity = 0;
-      if (value > this.products.find(product => product.id === id).stock) {
-        new_quantity = this.products.find(product => product.id === id).stock;
+      const product_added = this.cart.find(item => item.id === id);
+      const max = product_added.details.stock
+      if (value > max) {
+        new_quantity = max;
       } else if (value < 1) {
         new_quantity = 1;
       } else {
         new_quantity = value;
       }
-      this.cart.find(item => item.id === id).details.quantity = new_quantity
+      product_added.details.quantity = new_quantity
+      return new_quantity
     },
     useCounter(id) {
       const itemIndex = this.cart.findIndex(item => item.id === id);

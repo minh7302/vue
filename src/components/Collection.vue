@@ -1,14 +1,14 @@
 <script setup>
 import Product from './Product.vue';
 import { useStore } from '@/stores/store'
-import { toRefs } from 'vue';
+import { storeToRefs } from 'pinia'
 
-const products = toRefs(useStore()).products
-const cart = toRefs(useStore()).cart
+const store = useStore()
+const {products, cart} = storeToRefs(store)
 </script>
 
 <template>
-  <div class="products grid grid-cols-2 w-7/12 gap-x-10">
+  <div class="products grid grid-cols-2 w-7/12 gap-x-10 pr-5 overflow-y-scroll">
     <div v-for="(product, index) in products" :key="product.id"
       :id="'product-' + product.id"
       :class="[
@@ -24,3 +24,9 @@ const cart = toRefs(useStore()).cart
     </div>
   </div>
 </template>
+
+<style scoped>
+  .products.grid {
+    max-height: 800px;
+  }
+</style>

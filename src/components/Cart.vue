@@ -1,11 +1,16 @@
 <script setup>
   import ItemAdded from './ItemAdded.vue';
   import { useStore } from '@/stores/store'
-  import { toRefs } from 'vue';
+  import { storeToRefs } from 'pinia';
 
-  const cart = toRefs(useStore()).cart
-  const product_count = useStore().products.length
-  const totalPrice = toRefs(useStore()).totalPrice
+  const store = useStore()
+  const {cart, totalPrice} = storeToRefs(store)
+  const product_count = store.products.length
+
+  function clearCart() {
+    store.clearCart()
+  }
+
 </script>
 
 <template>
@@ -19,16 +24,16 @@
           /{{ product_count }} Added
         </div>
 
-        <a @click="useStore().clearCart()" class="rs-btn">
+        <a @click="clearCart()" class="rs-btn">
           Reset
         </a>
       </div>
 
-      <div class="cart-content h-fit grid grid-cols-3 gap-y-5">
+      <div class="cart-content h-fit flex flex-wrap gap-5 justify-center">
         <div 
           v-for="item in cart"
           :key="item"
-          class="cart-item flex justify-between h-fit"
+          class="cart-item flex justify-between h-fit w-1/4"
         >
           <ItemAdded 
             :item="item"
