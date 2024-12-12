@@ -1,7 +1,7 @@
 <script setup>
-  defineProps({
-    product: Object,
-  })
+  import { useStore } from '@/stores/store'
+  import { toRefs } from 'vue';
+  const product = toRefs(useStore()).productSelected
 </script>
 
 <template>

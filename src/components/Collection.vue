@@ -1,10 +1,10 @@
 <script setup>
 import Product from './Product.vue';
-defineProps({
-  products: Object,
-  cart: Object,
-});
-const emit = defineEmits(['selected', 'productRemoved', 'updateQuantity', 'addToCart']);
+import { useStore } from '@/stores/store'
+import { toRefs } from 'vue';
+
+const products = toRefs(useStore()).products
+const cart = toRefs(useStore()).cart
 </script>
 
 <template>
@@ -16,15 +16,10 @@ const emit = defineEmits(['selected', 'productRemoved', 'updateQuantity', 'addTo
         index >= products.length - 2 ? 'border-b-2' : ''
       ]"
     >
-      <Product 
+      <Product
         :product="product" 
-        :added="cart.items.some(item => item.id === product.id)"
-        :quantity="cart.items.find(item => item.id === product.id)?.details.quantity"
-        :cart="cart"
-        @selected="$emit('selected', $event)"
-        @updateQuantity="$emit('updateQuantity', $event)"
-        @productRemoved="$emit('productRemoved', $event)"
-        @addToCart="$emit('addToCart', $event)"
+        :added="cart.some(item => item.id === product.id)"
+        :quantity="cart.find(item => item.id === product.id)?.details?.quantity"
       />
     </div>
   </div>

@@ -1,11 +1,11 @@
 <script setup>
   import ItemAdded from './ItemAdded.vue';
-  const props = defineProps({
-    cart: Object,
-    product_count: Number,
-    totalPrice: Number
-  });
-  const emit = defineEmits(['productRemoved', 'clearCart']);
+  import { useStore } from '@/stores/store'
+  import { toRefs } from 'vue';
+
+  const cart = toRefs(useStore()).cart
+  const product_count = useStore().products.length
+  const totalPrice = toRefs(useStore()).totalPrice
 </script>
 
 <template>
@@ -14,24 +14,23 @@
       <div class="cart-info flex justify-between">
         <div class="count flex">
           <div class="num-item">
-            {{cart.items.length}}
+            {{cart.length}}
           </div>
           /{{ product_count }} Added
         </div>
 
-        <a @click="$emit('clearCart')" class="rs-btn">
+        <a @click="useStore().clearCart()" class="rs-btn">
           Reset
         </a>
       </div>
 
       <div class="cart-content h-fit grid grid-cols-3 gap-y-5">
         <div 
-          v-for="item in cart.items"
+          v-for="item in cart"
           :key="item"
           class="cart-item flex justify-between h-fit"
         >
           <ItemAdded 
-            @productRemoved="$emit('productRemoved', item.id)"
             :item="item"
           />
         </div>
@@ -40,7 +39,7 @@
 
     <div 
       class="totalPrice h-1/6 text-center"
-      :class="cart.items.length == 0 ? 'hidden' : ''"
+      :class="cart.length == 0 ? 'hidden' : ''"
     >
         Total: {{totalPrice}}
     </div>
