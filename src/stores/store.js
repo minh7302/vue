@@ -11,21 +11,25 @@ export const useStore = defineStore('storeId', {
   },
   getters: {
     totalPrice: (state) => {
-      let sum = 0;
-      state.cart.forEach(item => sum += item?.details?.price * item?.details?.quantity);
-      return sum;
+      return state.cart.reduce((acc, item) => acc + item.details.price * item.details.quantity, 0);
     },
   },
   actions: {
+    findProduct(object, id) {
+      const product = object.find(item => item.id === id);
+      if (product) {
+        return product;
+      }
+    },
     addToCart (id) {
-      const itemIndex = this.cart.findIndex(item => item.id === id);
-      if (itemIndex !== -1) {
+      const item = this.findProduct(this.cart, id);
+      if (item) {
         return;
       } else {
         const product_added = {
           id: id,
           details: {
-            ...this.products.find(product => product.id === id), 
+            ...this.findProduct(this.products, id), 
             quantity: 1
           }
         }
@@ -34,7 +38,7 @@ export const useStore = defineStore('storeId', {
     },
     updateQuantity(id, value) {
       let new_quantity = 0;
-      const product_added = this.cart.find(item => item.id === id);
+      const product_added = this.findProduct(this.cart, id);
       const max = product_added.details.stock
       if (value > max) {
         new_quantity = max;
@@ -47,10 +51,10 @@ export const useStore = defineStore('storeId', {
       return new_quantity
     },
     useCounter(id) {
-      const itemIndex = this.cart.findIndex(item => item.id === id);
-      const oldQuantity = this.cart[itemIndex].details.quantity;
+      const productDetails = this.findProduct(this.cart, id).details;
+      const oldQuantity = productDetails.quantity;
       const increment = () => {
-        if (!oldQuantity|| oldQuantity === this.cart[itemIndex].details.stock) return;
+        if (!oldQuantity|| oldQuantity === productDetails.stock) return;
         this.updateQuantity(id, oldQuantity + 1);
       }
       const decrement = () => {
